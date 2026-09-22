@@ -827,7 +827,7 @@
   document.getElementById('sendOrderBtn').onclick = function(){
     var text = buildOrderText();
     try { navigator.clipboard.writeText(text); } catch(e) {}
-    window.open('https://t.me/share/url?url=&text=' + encodeURIComponent(text), '_blank');
+    window.open('https://t.me/Shuxratbek70?text=' + encodeURIComponent(text), '_blank');
     showToast(t().toastCopied);
     state.cart = {};
     saveCart();
