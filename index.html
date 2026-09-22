@@ -827,7 +827,16 @@
   document.getElementById('sendOrderBtn').onclick = function(){
     var text = buildOrderText();
     try { navigator.clipboard.writeText(text); } catch(e) {}
-    window.open('https://t.me/Shuxratbek70?text=' + encodeURIComponent(text), '_blank');
+    var encoded = encodeURIComponent(text);
+    var opened = false;
+    var t0 = Date.now();
+    window.addEventListener('blur', function onBlur(){ opened = true; window.removeEventListener('blur', onBlur); });
+    window.location.href = 'tg://resolve?domain=Shuxratbek70&text=' + encoded;
+    setTimeout(function(){
+      if (!opened && Date.now() - t0 < 2000) {
+        window.open('https://t.me/Shuxratbek70?text=' + encoded, '_blank');
+      }
+    }, 700);
     showToast(t().toastCopied);
     state.cart = {};
     saveCart();
