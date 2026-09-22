@@ -457,9 +457,9 @@
       cartH:"Buyurtmangiz", cartTotalLbl:"Jami", toPayment:"To'lovga o'tish", cartEmpty:"Savat hali bo'sh", cartEmptyBtn:"Menyudan taom qo'shing",
       fabLabel:"Buyurtmani ko'rish",
       payH:"To'lov", paySub:"Qanday to'lashni xohlaysiz?", cashT:"Naqd pul", cashS:"Kuryerga yoki stolda to'lang",
-      cardT:"Karta", cardS:"Yetkazib berishda yoki kelganda karta", sendOrder:"Telegram orqali yuborish", sendNote:"Telegram ilovasi buyurtmangiz bilan ochiladi",
+      cardT:"Karta", cardS:"Yetkazib berishda yoki kelganda karta", sendOrder:"Telegram orqali yuborish", sendNote:"Telegram ochiladi, buyurtma matni tayyor turadi",
       qrH:"Skanerlab buyurtma bering", qrCaption:"Stollaringiz uchun chop eting — mijozlar skanerlab, to'g'ridan-to'g'ri telefonidan buyurtma beradi.",
-      toastAdded:"Savatga qo'shildi", toastCopied:"Buyurtma nusxalandi — Telegramga joylashtiring va yuboring",
+      toastAdded:"Savatga qo'shildi", toastCopied:"Buyurtma tayyor — Telegramda qabul qiluvchini tanlab yuboring",
       orderTitle:"OFTEN FAST FOOD — YANGI BUYURTMA", typeDelivery:"Yetkazib berish", typeDinein:"Zalda o'tirish",
       addr:"Manzil", phone:"Telefon", arrival:"Kelish vaqti", guests:"Mehmonlar", total:"Jami", payment:"To'lov", cash:"Naqd", card:"Karta"
     },
@@ -475,9 +475,9 @@
       cartH:"Ваш заказ", cartTotalLbl:"Итого", toPayment:"К оплате", cartEmpty:"Корзина пуста", cartEmptyBtn:"Добавьте блюда из меню",
       fabLabel:"Посмотреть заказ",
       payH:"Оплата", paySub:"Как вы хотите оплатить?", cashT:"Наличные", cashS:"Курьеру или за столом",
-      cardT:"Карта", cardS:"Картой при доставке или на месте", sendOrder:"Отправить через Telegram", sendNote:"Откроется Telegram с вашим заказом",
+      cardT:"Карта", cardS:"Картой при доставке или на месте", sendOrder:"Отправить через Telegram", sendNote:"Откроется Telegram с готовым текстом заказа",
       qrH:"Заказать по QR-коду", qrCaption:"Распечатайте для столов — клиенты сканируют и заказывают прямо со своего телефона.",
-      toastAdded:"Добавлено в корзину", toastCopied:"Заказ скопирован — вставьте в Telegram и отправьте",
+      toastAdded:"Добавлено в корзину", toastCopied:"Заказ готов — выберите получателя в Telegram и отправьте",
       orderTitle:"OFTEN FAST FOOD — НОВЫЙ ЗАКАЗ", typeDelivery:"Доставка", typeDinein:"В зале",
       addr:"Адрес", phone:"Телефон", arrival:"Время прихода", guests:"Гостей", total:"Итого", payment:"Оплата", cash:"Наличные", card:"Карта"
     },
@@ -493,9 +493,9 @@
       cartH:"Your order", cartTotalLbl:"Total", toPayment:"Continue to payment", cartEmpty:"Your cart is empty", cartEmptyBtn:"Add dishes from the menu",
       fabLabel:"View order",
       payH:"Payment", paySub:"How would you like to pay?", cashT:"Cash", cashS:"Pay the courier or at the table",
-      cardT:"Card", cardS:"Bank card on delivery or arrival", sendOrder:"Send via Telegram", sendNote:"Opens Telegram with your order",
+      cardT:"Card", cardS:"Bank card on delivery or arrival", sendOrder:"Send via Telegram", sendNote:"Opens Telegram with your order text ready",
       qrH:"Scan to order", qrCaption:"Print this for your tables — customers scan it and order straight from their phone.",
-      toastAdded:"Added to cart", toastCopied:"Order copied — paste it into Telegram and send",
+      toastAdded:"Added to cart", toastCopied:"Order ready — pick the recipient in Telegram and send",
       orderTitle:"OFTEN FAST FOOD — NEW ORDER", typeDelivery:"Delivery", typeDinein:"Dine-in",
       addr:"Address", phone:"Phone", arrival:"Arrival", guests:"Guests", total:"Total", payment:"Payment", cash:"Cash", card:"Card"
     }
@@ -826,14 +826,9 @@
 
   document.getElementById('sendOrderBtn').onclick = function(){
     var text = buildOrderText();
-    try {
-      navigator.clipboard.writeText(text).then(function(){
-        showToast(t().toastCopied);
-      }).catch(function(){});
-    } catch(e) {}
-    setTimeout(function(){
-      window.open('https://t.me/Shuxratbek70', '_blank');
-    }, 400);
+    try { navigator.clipboard.writeText(text); } catch(e) {}
+    window.open('https://t.me/share/url?url=&text=' + encodeURIComponent(text), '_blank');
+    showToast(t().toastCopied);
     state.cart = {};
     saveCart();
     renderCart();
