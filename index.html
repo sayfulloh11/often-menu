@@ -255,4 +255,169 @@
   /* ---------- footer (menu screen) ---------- */
   .site-footer { padding: 30px 20px calc(40px + env(safe-area-inset-bottom,0px)); text-align: center; border-top: 1px solid var(--line); margin-top: 10px; }
   .site-footer .fb { font-family: 'Anton', sans-serif; color: var(--mustard); font-size: 20px; margin-bottom: 10px; }
-  .site-footer a { color: var(--text-hi); text-decoration
+  .site-footer a { color: var(--text-hi); text-decoration: none; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; margin: 4px 10px; }
+  .site-footer .copy { color: var(--text-lo); font-size: 11px; margin-top: 18px; }
+
+  .toast {
+    position: fixed; top: calc(env(safe-area-inset-top,0px) + 70px); left: 50%; transform: translateX(-50%) translateY(-20px);
+    background: var(--mustard); color: var(--charcoal); font-weight: 800; font-size: 13px; padding: 11px 20px;
+    border-radius: 999px; z-index: 80; opacity: 0; transition: all .25s; box-shadow: 0 8px 24px rgba(0,0,0,0.3); white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">O</div>
+    <div class="brand-name">OFTEN <span>FAST FOOD</span></div>
+  </div>
+  <div class="lang-switch" id="langSwitch">
+    <button data-lang="uz">UZ</button>
+    <button data-lang="ru">RU</button>
+    <button data-lang="en">EN</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN: WELCOME ===== -->
+<section class="screen active" id="screen-welcome">
+  <div class="hero">
+    <div class="hero-eyebrow" id="w-open">Ochiq / Open now</div>
+    <h1 id="w-title">ШАУРМА<br>ХОТ-ДОГ<br>ЛЮБОВЬ</h1>
+    <p class="tagline" id="w-tag">Fast food you keep coming back for.</p>
+    <div class="delivery-badge">
+      <div class="dot">🛵</div>
+      <div>
+        <b id="w-badge">Bepul yetkazib berish</b><br>
+        <a href="tel:+998940706060">+998 94 070 60 60</a>
+      </div>
+    </div>
+  </div>
+  <div class="order-choices">
+    <div class="choice-card" data-type="delivery">
+      <div class="choice-icon">🛵</div>
+      <div class="choice-body"><h3 id="c-delivery-t">Delivery</h3><p id="c-delivery-s">We bring it to your door</p></div>
+      <div class="choice-arrow">›</div>
+    </div>
+    <div class="choice-card" data-type="dinein">
+      <div class="choice-icon">🍽️</div>
+      <div class="choice-body"><h3 id="c-dinein-t">Dine-in</h3><p id="c-dinein-s">Reserve a table at OFTEN</p></div>
+      <div class="choice-arrow">›</div>
+    </div>
+  </div>
+  <div class="qr-link-row">
+    <button id="showQrBtn">📱 <span id="qr-link-text">Show QR code for this menu</span></button>
+  </div>
+</section>
+
+<!-- ===== SCREEN: DELIVERY DETAILS ===== -->
+<section class="screen" id="screen-delivery">
+  <div class="form-wrap">
+    <h2 class="form-title" id="d-title">Delivery details</h2>
+    <p class="form-sub" id="d-sub">So the courier can find you.</p>
+    <label class="field-label" id="d-addr-label">Address</label>
+    <textarea id="deliveryAddress" placeholder=""></textarea>
+    <label class="field-label" id="d-phone-label">Phone number</label>
+    <input type="tel" id="deliveryPhone" placeholder="+998 90 123 45 67">
+    <button class="btn-primary" id="deliveryContinue" disabled></button>
+    <button class="btn-ghost" data-back="welcome" id="d-back"></button>
+  </div>
+</section>
+
+<!-- ===== SCREEN: DINE-IN DETAILS ===== -->
+<section class="screen" id="screen-dinein">
+  <div class="form-wrap">
+    <h2 class="form-title" id="di-title">Dine-in details</h2>
+    <p class="form-sub" id="di-sub">When are you arriving?</p>
+    <div class="pill-row" id="arrivalPills"></div>
+    <input type="time" id="customTime" style="display:none;">
+    <label class="field-label" id="di-guests-label">Number of guests</label>
+    <div class="stepper">
+      <button id="guestMinus">−</button>
+      <div class="count" id="guestCount">2</div>
+      <button id="guestPlus">+</button>
+    </div>
+    <p class="hint" id="di-hint">Max 15 guests</p>
+    <button class="btn-primary" id="dineinContinue"></button>
+    <button class="btn-ghost" data-back="welcome" id="di-back"></button>
+  </div>
+</section>
+
+<!-- ===== SCREEN: MENU ===== -->
+<section class="screen" id="screen-menu">
+  <div class="menu-header">
+    <h2 id="m-title">Menu</h2>
+    <p id="m-sub">Tap + to add items to your order</p>
+  </div>
+  <div class="cat-tabs" id="catTabs"></div>
+  <div class="menu-list" id="menuList"></div>
+  <footer class="site-footer">
+    <div class="fb">OFTEN <span style="color:var(--text-hi)">FAST FOOD</span></div>
+    <div>
+      <a href="tel:+998940706060">📞 +998 94 070 60 60</a>
+      <a href="https://t.me/Shuxratbek70" target="_blank" rel="noopener">✈️ Telegram</a>
+    </div>
+    <div class="copy">© 2026 OFTEN Fast Food</div>
+  </footer>
+</section>
+
+<button class="cart-fab" id="cartFab">
+  <div class="cf-left"><div class="badge" id="fabCount">0</div><span id="fabLabel">View order</span></div>
+  <span id="fabTotal">0 so'm</span>
+</button>
+
+<!-- overlay + sheets -->
+<div class="overlay" id="overlay"></div>
+
+<div class="sheet" id="cartSheet">
+  <div class="sheet-head"><h3 id="cart-h">Your order</h3><button class="sheet-close" data-close>✕</button></div>
+  <div class="sheet-body" id="cartBody"></div>
+  <div class="sheet-foot">
+    <div class="total-row"><span class="lbl" id="cart-total-lbl">Total</span><span class="val" id="cartTotal">0 so'm</span></div>
+    <button class="btn-primary" id="toPayment"></button>
+  </div>
+</div>
+
+<div class="sheet" id="paySheet">
+  <div class="sheet-head"><h3 id="pay-h">Payment</h3><button class="sheet-close" data-close>✕</button></div>
+  <div class="sheet-body">
+    <p class="form-sub" id="pay-sub" style="margin-bottom:16px;"></p>
+    <div class="pay-option" data-pay="cash"><div class="pi">💵</div><div class="pt"><b id="pay-cash-t">Cash</b><span id="pay-cash-s">Pay the courier / at the table</span></div></div>
+    <div class="pay-option" data-pay="card"><div class="pi">💳</div><div class="pt"><b id="pay-card-t">Card</b><span id="pay-card-s">Bank card on delivery / arrival</span></div></div>
+  </div>
+  <div class="sheet-foot">
+    <button class="btn-primary" id="sendOrderBtn"></button>
+    <div class="send-note">✈️ <span id="send-note-txt">Opens Telegram with your order</span></div>
+  </div>
+</div>
+
+<div class="sheet" id="qrSheet">
+  <div class="sheet-head"><h3 id="qr-h">Scan to order</h3><button class="sheet-close" data-close>✕</button></div>
+  <div class="sheet-body">
+    <div class="qr-box"><div class="qr-frame" id="qrCanvas"></div></div>
+    <p class="qr-caption" id="qr-caption">Print this code for your tables — customers scan it to open the OFTEN menu and order straight from their phone.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- DATA ---------------- */
+  var CATS = [
+    { id:'hotdog', icon:'🌭', name:{uz:"Hot Dog", ru:"Хот-дог", en:"Hot Dog"} },
+    { id:'nonburger', icon:'🍔', name:{uz:"Nonburger", ru:"Нонбургер", en:"Nonburger"} },
+    { id:'lavash', icon:'🌯', name:{uz:"Lavash", ru:"Лаваш", en:"Lavash"} },
+    { id:'pizza', icon:'🍕', name:{uz:"Pizza", ru:"Пицца", en:"Pizza"} },
+    { id:'souslar', icon:'🥣', name:{uz:"Souslar", ru:"Соусы", en:"Sauces"} }
+  ];
+
+  var MENU = [
+    { id:1, cat:'hotdog', icon:'🌭', price:10000, name:{uz:"Hot Dog", ru:"Хот-дог", en:"Hot Dog"} },
+    { id:2, cat:'hotdog', icon:'🌭', price:12000, name:{uz:"Hot Dog 2X", ru:"Хот-дог 2X", en:"Hot Dog 2X"} },
+    { id:3, cat:'hotdog', icon:'🌭', price:15000, name:{uz:"Haggi", ru:"Хагги", en:"Haggi"} },
+    { id:4, cat:'hotdog', icon:'🌭', price:20000, name:{uz:"Hot Dog Kolbasa + Pishloq", ru:"Хот-дог Колбаса + Сыр", en:"Hot Dog Sausage + Cheese"} },
+    { id:5, cat:'hotdog', icon:'🌭', price:30000, name:{uz:"Hot Dog 40 sm", ru:"Хот-дог 40 см", en:"Hot Dog 4
