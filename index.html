@@ -510,4 +510,180 @@
     cart: {}, // id -> qty
     activeCat: 'hotdog',
     payment: null
- 
+  };
+
+  try {
+    var saved = localStorage.getItem('often_cart');
+    if (saved) state.cart = JSON.parse(saved);
+    var savedLang = localStorage.getItem('often_lang');
+    if (savedLang && T[savedLang]) state.lang = savedLang;
+  } catch(e) {}
+
+  function saveCart() { try { localStorage.setItem('often_cart', JSON.stringify(state.cart)); } catch(e) {} }
+  function t() { return T[state.lang]; }
+  function fmt(n) { return n.toLocaleString('ru-RU') + " so'm"; }
+
+  /* ---------------- RENDER: static text ---------------- */
+  function renderTexts() {
+    var tr = t();
+    document.getElementById('w-open').textContent = tr.openBadge;
+    document.getElementById('w-title').innerHTML = tr.title.replace(/\n/g,'<br>');
+    document.getElementById('w-tag').textContent = tr.tag;
+    document.getElementById('w-badge').textContent = tr.deliveryBadge;
+    document.getElementById('c-delivery-t').textContent = tr.deliveryT;
+    document.getElementById('c-delivery-s').textContent = tr.deliveryS;
+    document.getElementById('c-dinein-t').textContent = tr.dineinT;
+    document.getElementById('c-dinein-s').textContent = tr.dineinS;
+    document.getElementById('qr-link-text').textContent = tr.qrLink;
+
+    document.getElementById('d-title').textContent = tr.dTitle;
+    document.getElementById('d-sub').textContent = tr.dSub;
+    document.getElementById('d-addr-label').textContent = tr.dAddrLabel;
+    document.getElementById('deliveryAddress').placeholder = tr.dAddrPh;
+    document.getElementById('d-phone-label').textContent = tr.dPhoneLabel;
+    document.getElementById('deliveryContinue').textContent = tr.dContinue;
+    document.getElementById('d-back').textContent = tr.back;
+
+    document.getElementById('di-title').textContent = tr.diTitle;
+    document.getElementById('di-sub').textContent = tr.diSub;
+    document.getElementById('di-guests-label').textContent = tr.guestsLabel;
+    document.getElementById('di-hint').textContent = tr.guestsHint;
+    document.getElementById('dineinContinue').textContent = tr.diContinue;
+    document.getElementById('di-back').textContent = tr.back;
+
+    document.getElementById('m-title').textContent = tr.mTitle;
+    document.getElementById('m-sub').textContent = tr.mSub;
+    document.getElementById('fabLabel').textContent = tr.fabLabel;
+
+    document.getElementById('cart-h').textContent = tr.cartH;
+    document.getElementById('cart-total-lbl').textContent = tr.cartTotalLbl;
+    document.getElementById('toPayment').textContent = tr.toPayment;
+
+    document.getElementById('pay-h').textContent = tr.payH;
+    document.getElementById('pay-sub').textContent = tr.paySub;
+    document.getElementById('pay-cash-t').textContent = tr.cashT;
+    document.getElementById('pay-cash-s').textContent = tr.cashS;
+    document.getElementById('pay-card-t').textContent = tr.cardT;
+    document.getElementById('pay-card-s').textContent = tr.cardS;
+    document.getElementById('sendOrderBtn').textContent = tr.sendOrder;
+    document.getElementById('send-note-txt').textContent = tr.sendNote;
+
+    document.getElementById('qr-h').textContent = tr.qrH;
+    document.getElementById('qr-caption').textContent = tr.qrCaption;
+
+    renderArrivalPills();
+    renderCatTabs();
+    renderMenu();
+    renderCart();
+  }
+
+  function renderArrivalPills() {
+    var tr = t();
+    var opts = [
+      {k:'now', l:tr.now}, {k:'15', l:tr.plus15}, {k:'30', l:tr.plus30}, {k:'custom', l:tr.pickTime}
+    ];
+    var wrap = document.getElementById('arrivalPills');
+    wrap.innerHTML = '';
+    opts.forEach(function(o){
+      var b = document.createElement('button');
+      b.className = 'pill-btn' + (state.dinein.arrival === o.k ? ' active' : '');
+      b.textContent = o.l;
+      b.onclick = function(){
+        state.dinein.arrival = o.k;
+        document.getElementById('customTime').style.display = (o.k === 'custom') ? 'block' : 'none';
+        renderArrivalPills();
+      };
+      wrap.appendChild(b);
+    });
+  }
+
+  /* ---------------- RENDER: menu ---------------- */
+  function renderCatTabs() {
+    var wrap = document.getElementById('catTabs');
+    wrap.innerHTML = '';
+    CATS.forEach(function(c){
+      var b = document.createElement('button');
+      b.className = 'cat-tab' + (state.activeCat === c.id ? ' active' : '');
+      b.innerHTML = c.icon + ' ' + c.name[state.lang];
+      b.onclick = function(){
+        state.activeCat = c.id;
+        renderCatTabs();
+        var el = document.getElementById('cat-' + c.id);
+        if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      };
+      wrap.appendChild(b);
+    });
+  }
+
+  function renderMenu() {
+    var wrap = document.getElementById('menuList');
+    wrap.innerHTML = '';
+    CATS.forEach(function(c){
+      var items = MENU.filter(function(m){ return m.cat === c.id; });
+      if (!items.length) return;
+      var block = document.createElement('div');
+      block.className = 'cat-block';
+      block.id = 'cat-' + c.id;
+      var title = document.createElement('div');
+      title.className = 'cat-block-title';
+      title.innerHTML = c.icon + ' ' + c.name[state.lang];
+      block.appendChild(title);
+      items.forEach(function(m){
+        var row = document.createElement('div');
+        row.className = 'menu-item';
+        var qty = state.cart[m.id] || 0;
+        row.innerHTML =
+          '<div class="item-icon">' + m.icon + '</div>' +
+          '<div class="item-mid"><div class="item-name-row"><span class="item-name">' + m.name[state.lang] + '</span><span class="item-leader"></span><span class="item-price">' + fmt(m.price) + '</span></div></div>' +
+          '<div class="item-add-wrap"></div>';
+        var addWrap = row.querySelector('.item-add-wrap');
+        if (qty > 0) {
+          addWrap.innerHTML = '<div class="item-qty"><button class="qm">−</button><span class="n">' + qty + '</span><button class="qp">+</button></div>';
+          addWrap.querySelector('.qm').onclick = function(){ changeQty(m.id, -1); };
+          addWrap.querySelector('.qp').onclick = function(){ changeQty(m.id, 1); };
+        } else {
+          addWrap.innerHTML = '<button class="item-add">+</button>';
+          addWrap.querySelector('.item-add').onclick = function(){ changeQty(m.id, 1); showToast(t().toastAdded); };
+        }
+        block.appendChild(row);
+      });
+      wrap.appendChild(block);
+    });
+  }
+
+  function changeQty(id, delta) {
+    var cur = state.cart[id] || 0;
+    var next = Math.max(0, cur + delta);
+    if (next === 0) delete state.cart[id];
+    else state.cart[id] = next;
+    saveCart();
+    renderMenu();
+    renderCart();
+  }
+
+  function cartCount() {
+    var n = 0;
+    for (var k in state.cart) n += state.cart[k];
+    return n;
+  }
+  function cartTotal() {
+    var sum = 0;
+    for (var k in state.cart) {
+      var item = MENU.find(function(m){ return m.id == k; });
+      if (item) sum += item.price * state.cart[k];
+    }
+    return sum;
+  }
+
+  function renderCart() {
+    var n = cartCount(), total = cartTotal();
+    document.getElementById('fabCount').textContent = n;
+    document.getElementById('fabTotal').textContent = fmt(total);
+    document.getElementById('cartFab').classList.toggle('show', n > 0 && state.orderType !== null && !isFormScreen());
+
+    var body = document.getElementById('cartBody');
+    body.innerHTML = '';
+    if (n === 0) {
+      body.innerHTML = '<div class="cart-empty"><div class="em">🛒</div><div>' + t().cartEmpty + '</div></div>';
+    } else {
+    
