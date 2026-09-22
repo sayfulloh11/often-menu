@@ -769,6 +769,7 @@
       state.payment = p.getAttribute('data-pay');
       document.querySelectorAll('.pay-option').forEach(function(o){ o.classList.remove('active'); });
       p.classList.add('active');
+      sendOrder();
     };
   });
 
@@ -830,7 +831,7 @@
     return lines.join('\n');
   }
 
-  document.getElementById('sendOrderBtn').onclick = function(){
+  function sendOrder(){
     var text = buildOrderText();
     try { navigator.clipboard.writeText(text); } catch(e) {}
     var encoded = encodeURIComponent(text);
@@ -849,7 +850,8 @@
     renderCart();
     renderMenu();
     closeAllSheets();
-  };
+  }
+  document.getElementById('sendOrderBtn').onclick = sendOrder;
 
   /* ---------------- LANG SWITCH ---------------- */
   document.getElementById('langSwitch').addEventListener('click', function(e){
