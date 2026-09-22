@@ -686,4 +686,191 @@
     if (n === 0) {
       body.innerHTML = '<div class="cart-empty"><div class="em">🛒</div><div>' + t().cartEmpty + '</div></div>';
     } else {
-    
+      Object.keys(state.cart).forEach(function(id){
+        var item = MENU.find(function(m){ return m.id == id; });
+        if (!item) return;
+        var qty = state.cart[id];
+        var row = document.createElement('div');
+        row.className = 'cart-row';
+        row.innerHTML =
+          '<div class="item-icon">' + item.icon + '</div>' +
+          '<div class="ci"><div class="ci-name">' + item.name[state.lang] + '</div><div class="ci-price">' + fmt(item.price) + '</div></div>' +
+          '<div class="item-qty"><button class="qm">−</button><span class="n">' + qty + '</span><button class="qp">+</button></div>';
+        row.querySelector('.qm').onclick = function(){ changeQty(item.id, -1); };
+        row.querySelector('.qp').onclick = function(){ changeQty(item.id, 1); };
+        body.appendChild(row);
+      });
+    }
+    document.getElementById('cartTotal').textContent = fmt(total);
+  }
+
+  function isFormScreen() {
+    return ['screen-delivery','screen-dinein'].some(function(id){
+      return document.getElementById(id).classList.contains('active');
+    });
+  }
+
+  /* ---------------- NAVIGATION ---------------- */
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+    renderCart();
+  }
+
+  document.querySelectorAll('.choice-card').forEach(function(c){
+    c.onclick = function(){
+      state.orderType = c.getAttribute('data-type');
+      if (state.orderType === 'delivery') showScreen('screen-delivery');
+      else showScreen('screen-dinein');
+    };
+  });
+
+  document.querySelectorAll('[data-back]').forEach(function(b){
+    b.onclick = function(){ showScreen('screen-' + b.getAttribute('data-back')); };
+  });
+
+  document.getElementById('deliveryAddress').addEventListener('input', function(e){
+    state.delivery.address = e.target.value;
+    validateDelivery();
+  });
+  document.getElementById('deliveryPhone').addEventListener('input', function(e){
+    state.delivery.phone = e.target.value;
+    validateDelivery();
+  });
+  function validateDelivery() {
+    var ok = state.delivery.address.trim().length > 3 && state.delivery.phone.trim().length > 5;
+    document.getElementById('deliveryContinue').disabled = !ok;
+  }
+  document.getElementById('deliveryContinue').onclick = function(){ showScreen('screen-menu'); };
+
+  document.getElementById('guestMinus').onclick = function(){
+    state.dinein.guests = Math.max(1, state.dinein.guests - 1);
+    document.getElementById('guestCount').textContent = state.dinein.guests;
+  };
+  document.getElementById('guestPlus').onclick = function(){
+    state.dinein.guests = Math.min(15, state.dinein.guests + 1);
+    document.getElementById('guestCount').textContent = state.dinein.guests;
+  };
+  document.getElementById('customTime').addEventListener('input', function(e){ state.dinein.customTime = e.target.value; });
+  document.getElementById('dineinContinue').onclick = function(){ showScreen('screen-menu'); };
+
+  document.getElementById('cartFab').onclick = function(){ openSheet('cartSheet'); };
+  document.getElementById('toPayment').onclick = function(){ closeSheet('cartSheet'); openSheet('paySheet'); };
+
+  document.querySelectorAll('.pay-option').forEach(function(p){
+    p.onclick = function(){
+      state.payment = p.getAttribute('data-pay');
+      document.querySelectorAll('.pay-option').forEach(function(o){ o.classList.remove('active'); });
+      p.classList.add('active');
+    };
+  });
+
+  document.getElementById('showQrBtn').onclick = function(){ renderQr(); openSheet('qrSheet'); };
+
+  document.querySelectorAll('[data-close]').forEach(function(b){
+    b.onclick = function(){ closeAllSheets(); };
+  });
+  document.getElementById('overlay').onclick = function(){ closeAllSheets(); };
+
+  function openSheet(id) {
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById(id).classList.add('show');
+  }
+  function closeSheet(id) { document.getElementById(id).classList.remove('show'); }
+  function closeAllSheets() {
+    document.getElementById('overlay').classList.remove('show');
+    ['cartSheet','paySheet','qrSheet'].forEach(closeSheet);
+  }
+
+  function renderQr() {
+    var el = document.getElementById('qrCanvas');
+    el.innerHTML = '';
+    try {
+      new QRCode(el, { text: window.location.href, width: 200, height: 200, colorDark: "#17130F", colorLight: "#ffffff" });
+    } catch(e) {
+      el.innerHTML = '<div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;color:#999;font-size:12px;text-align:center;padding:10px;">QR unavailable offline</div>';
+    }
+  }
+
+  /* ---------------- ORDER TEXT + SEND ---------------- */
+  function buildOrderText() {
+    var tr = t();
+    var lines = [];
+    lines.push(tr.orderTitle);
+    lines.push('');
+    lines.push((state.orderType === 'delivery' ? tr.typeDelivery : tr.typeDinein));
+    if (state.orderType === 'delivery') {
+      lines.push(tr.addr + ': ' + state.delivery.address);
+      lines.push(tr.phone + ': ' + state.delivery.phone);
+    } else {
+      var arrivalText = state.dinein.arrival === 'now' ? tr.now
+        : state.dinein.arrival === '15' ? tr.plus15
+        : state.dinein.arrival === '30' ? tr.plus30
+        : (state.dinein.customTime || tr.pickTime);
+      lines.push(tr.arrival + ': ' + arrivalText);
+      lines.push(tr.guests + ': ' + state.dinein.guests);
+    }
+    lines.push('');
+    Object.keys(state.cart).forEach(function(id){
+      var item = MENU.find(function(m){ return m.id == id; });
+      if (!item) return;
+      var qty = state.cart[id];
+      lines.push('• ' + item.name[state.lang] + ' x' + qty + ' — ' + fmt(item.price * qty));
+    });
+    lines.push('');
+    lines.push(tr.total + ': ' + fmt(cartTotal()));
+    if (state.payment) lines.push(tr.payment + ': ' + (state.payment === 'cash' ? tr.cash : tr.card));
+    return lines.join('\n');
+  }
+
+  document.getElementById('sendOrderBtn').onclick = function(){
+    var text = buildOrderText();
+    try {
+      navigator.clipboard.writeText(text).then(function(){
+        showToast(t().toastCopied);
+      }).catch(function(){});
+    } catch(e) {}
+    setTimeout(function(){
+      window.open('https://t.me/Shuxratbek70', '_blank');
+    }, 400);
+    state.cart = {};
+    saveCart();
+    renderCart();
+    renderMenu();
+    closeAllSheets();
+  };
+
+  /* ---------------- LANG SWITCH ---------------- */
+  document.getElementById('langSwitch').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-lang]');
+    if (!b) return;
+    state.lang = b.getAttribute('data-lang');
+    try { localStorage.setItem('often_lang', state.lang); } catch(err) {}
+    updateLangButtons();
+    renderTexts();
+  });
+  function updateLangButtons() {
+    document.querySelectorAll('.lang-switch button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-lang') === state.lang);
+    });
+  }
+
+  /* ---------------- TOAST ---------------- */
+  var toastTimer = null;
+  function showToast(msg) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2200);
+  }
+
+  /* ---------------- INIT ---------------- */
+  updateLangButtons();
+  renderTexts();
+})();
+</script>
+</body>
+</html>
+
