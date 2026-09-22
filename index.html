@@ -420,4 +420,94 @@
     { id:2, cat:'hotdog', icon:'🌭', price:12000, name:{uz:"Hot Dog 2X", ru:"Хот-дог 2X", en:"Hot Dog 2X"} },
     { id:3, cat:'hotdog', icon:'🌭', price:15000, name:{uz:"Haggi", ru:"Хагги", en:"Haggi"} },
     { id:4, cat:'hotdog', icon:'🌭', price:20000, name:{uz:"Hot Dog Kolbasa + Pishloq", ru:"Хот-дог Колбаса + Сыр", en:"Hot Dog Sausage + Cheese"} },
-    { id:5, cat:'hotdog', icon:'🌭', price:30000, name:{uz:"Hot Dog 40 sm", ru:"Хот-дог 40 см", en:"Hot Dog 4
+    { id:5, cat:'hotdog', icon:'🌭', price:30000, name:{uz:"Hot Dog 40 sm", ru:"Хот-дог 40 см", en:"Hot Dog 40cm"} },
+
+    { id:6, cat:'nonburger', icon:'🍔', price:35000, name:{uz:"Mol go'shtida", ru:"С говядиной", en:"Beef"} },
+    { id:7, cat:'nonburger', icon:'🍔', price:25000, name:{uz:"Tovuq go'shtida", ru:"С курицей", en:"Chicken"} },
+
+    { id:8, cat:'lavash', icon:'🌯', price:35000, name:{uz:"Mol go'shtida", ru:"С говядиной", en:"Beef"} },
+    { id:9, cat:'lavash', icon:'🌯', price:25000, name:{uz:"Tovuq go'shtida", ru:"С курицей", en:"Chicken"} },
+    { id:10, cat:'lavash', icon:'🌯', price:18000, name:{uz:"Mini Lavash", ru:"Мини Лаваш", en:"Mini Lavash"} },
+    { id:11, cat:'lavash', icon:'🌯', price:15000, name:{uz:"Mini Tovuq", ru:"Мини Курица", en:"Mini Chicken"} },
+
+    { id:12, cat:'pizza', icon:'🍕', price:60000, name:{uz:"Peperoni", ru:"Пепперони", en:"Pepperoni"} },
+    { id:13, cat:'pizza', icon:'🍕', price:55000, name:{uz:"Tovuq", ru:"Курица", en:"Chicken"} },
+    { id:14, cat:'pizza', icon:'🍕', price:80000, name:{uz:"Assortiy", ru:"Ассорти", en:"Assorted"} },
+    { id:15, cat:'pizza', icon:'🍕', price:75000, name:{uz:"Go'shtlik", ru:"Мясная", en:"Meat Lovers"} },
+    { id:16, cat:'pizza', icon:'🍕', price:65000, name:{uz:"Indeyka", ru:"Индейка", en:"Turkey"} },
+    { id:17, cat:'pizza', icon:'🍕', price:55000, name:{uz:"Pishloqli", ru:"Сырная", en:"Cheese"} },
+
+    { id:18, cat:'souslar', icon:'🧄', price:2000, name:{uz:"Chesnokli", ru:"Чесночный", en:"Garlic"} },
+    { id:19, cat:'souslar', icon:'🍅', price:2000, name:{uz:"Tomatli", ru:"Томатный", en:"Tomato"} },
+    { id:20, cat:'souslar', icon:'🧀', price:2000, name:{uz:"Pishloqli", ru:"Сырный", en:"Cheese"} },
+    { id:21, cat:'souslar', icon:'🌶️', price:2000, name:{uz:"Xalapeno", ru:"Халапеньо", en:"Jalapeño"} },
+    { id:22, cat:'souslar', icon:'🧀', price:5000, name:{uz:"Matsarello", ru:"Моцарелла", en:"Mozzarella"} }
+  ];
+
+  var T = {
+    uz: {
+      openBadge:"Hozir ochiq", title:"ШАУРМА\nХОТ-ДОГ\nЛЮБОВЬ", tag:"Qaytib-qaytib borgingiz keladigan fast food.",
+      deliveryBadge:"Yetkazib berish bepul", deliveryT:"Yetkazib berish", deliveryS:"Buyurtmangizni eshigingizga olib kelamiz",
+      dineinT:"Zalda o'tirish", dineinS:"OFTEN'da stol band qiling", qrLink:"Ushbu menyu uchun QR kodni ko'rish",
+      dTitle:"Yetkazib berish ma'lumotlari", dSub:"Kuryer sizni topishi uchun.", dAddrLabel:"Manzil", dAddrPh:"Ko'cha, uy, mo'ljal...",
+      dPhoneLabel:"Telefon raqami", dContinue:"Menyuga o'tish", back:"Orqaga",
+      diTitle:"Zal uchun ma'lumot", diSub:"Qachon kelasiz?", now:"Hozir", plus15:"+15 daqiqa", plus30:"+30 daqiqa", pickTime:"Vaqt tanlash",
+      guestsLabel:"Mehmonlar soni", guestsHint:"Maksimal 15 kishi", diContinue:"Menyuga o'tish",
+      mTitle:"Menyu", mSub:"Qo'shish uchun + tugmasini bosing",
+      cartH:"Buyurtmangiz", cartTotalLbl:"Jami", toPayment:"To'lovga o'tish", cartEmpty:"Savat hali bo'sh", cartEmptyBtn:"Menyudan taom qo'shing",
+      fabLabel:"Buyurtmani ko'rish",
+      payH:"To'lov", paySub:"Qanday to'lashni xohlaysiz?", cashT:"Naqd pul", cashS:"Kuryerga yoki stolda to'lang",
+      cardT:"Karta", cardS:"Yetkazib berishda yoki kelganda karta", sendOrder:"Telegram orqali yuborish", sendNote:"Telegram ilovasi buyurtmangiz bilan ochiladi",
+      qrH:"Skanerlab buyurtma bering", qrCaption:"Stollaringiz uchun chop eting — mijozlar skanerlab, to'g'ridan-to'g'ri telefonidan buyurtma beradi.",
+      toastAdded:"Savatga qo'shildi", toastCopied:"Buyurtma nusxalandi — Telegramga joylashtiring va yuboring",
+      orderTitle:"OFTEN FAST FOOD — YANGI BUYURTMA", typeDelivery:"Yetkazib berish", typeDinein:"Zalda o'tirish",
+      addr:"Manzil", phone:"Telefon", arrival:"Kelish vaqti", guests:"Mehmonlar", total:"Jami", payment:"To'lov", cash:"Naqd", card:"Karta"
+    },
+    ru: {
+      openBadge:"Сейчас открыто", title:"ШАУРМА\nХОТ-ДОГ\nЛЮБОВЬ", tag:"Фастфуд, к которому хочется возвращаться.",
+      deliveryBadge:"Доставка бесплатно", deliveryT:"Доставка", deliveryS:"Привезём заказ прямо к вашей двери",
+      dineinT:"В зале", dineinS:"Забронируйте стол в OFTEN", qrLink:"Показать QR-код этого меню",
+      dTitle:"Данные для доставки", dSub:"Чтобы курьер вас нашёл.", dAddrLabel:"Адрес", dAddrPh:"Улица, дом, ориентир...",
+      dPhoneLabel:"Номер телефона", dContinue:"Перейти к меню", back:"Назад",
+      diTitle:"Данные для зала", diSub:"Когда вы придёте?", now:"Сейчас", plus15:"+15 минут", plus30:"+30 минут", pickTime:"Выбрать время",
+      guestsLabel:"Количество гостей", guestsHint:"Максимум 15 человек", diContinue:"Перейти к меню",
+      mTitle:"Меню", mSub:"Нажмите +, чтобы добавить блюдо",
+      cartH:"Ваш заказ", cartTotalLbl:"Итого", toPayment:"К оплате", cartEmpty:"Корзина пуста", cartEmptyBtn:"Добавьте блюда из меню",
+      fabLabel:"Посмотреть заказ",
+      payH:"Оплата", paySub:"Как вы хотите оплатить?", cashT:"Наличные", cashS:"Курьеру или за столом",
+      cardT:"Карта", cardS:"Картой при доставке или на месте", sendOrder:"Отправить через Telegram", sendNote:"Откроется Telegram с вашим заказом",
+      qrH:"Заказать по QR-коду", qrCaption:"Распечатайте для столов — клиенты сканируют и заказывают прямо со своего телефона.",
+      toastAdded:"Добавлено в корзину", toastCopied:"Заказ скопирован — вставьте в Telegram и отправьте",
+      orderTitle:"OFTEN FAST FOOD — НОВЫЙ ЗАКАЗ", typeDelivery:"Доставка", typeDinein:"В зале",
+      addr:"Адрес", phone:"Телефон", arrival:"Время прихода", guests:"Гостей", total:"Итого", payment:"Оплата", cash:"Наличные", card:"Карта"
+    },
+    en: {
+      openBadge:"Open now", title:"SHAWARMA\nHOT DOG\nLOVE", tag:"Fast food you keep coming back for.",
+      deliveryBadge:"Free delivery", deliveryT:"Delivery", deliveryS:"We bring your order to your door",
+      dineinT:"Dine-in", dineinS:"Reserve a table at OFTEN", qrLink:"Show QR code for this menu",
+      dTitle:"Delivery details", dSub:"So the courier can find you.", dAddrLabel:"Address", dAddrPh:"Street, building, landmark...",
+      dPhoneLabel:"Phone number", dContinue:"Continue to menu", back:"Back",
+      diTitle:"Dine-in details", diSub:"When are you arriving?", now:"Now", plus15:"+15 min", plus30:"+30 min", pickTime:"Choose time",
+      guestsLabel:"Number of guests", guestsHint:"Max 15 guests", diContinue:"Continue to menu",
+      mTitle:"Menu", mSub:"Tap + to add items to your order",
+      cartH:"Your order", cartTotalLbl:"Total", toPayment:"Continue to payment", cartEmpty:"Your cart is empty", cartEmptyBtn:"Add dishes from the menu",
+      fabLabel:"View order",
+      payH:"Payment", paySub:"How would you like to pay?", cashT:"Cash", cashS:"Pay the courier or at the table",
+      cardT:"Card", cardS:"Bank card on delivery or arrival", sendOrder:"Send via Telegram", sendNote:"Opens Telegram with your order",
+      qrH:"Scan to order", qrCaption:"Print this for your tables — customers scan it and order straight from their phone.",
+      toastAdded:"Added to cart", toastCopied:"Order copied — paste it into Telegram and send",
+      orderTitle:"OFTEN FAST FOOD — NEW ORDER", typeDelivery:"Delivery", typeDinein:"Dine-in",
+      addr:"Address", phone:"Phone", arrival:"Arrival", guests:"Guests", total:"Total", payment:"Payment", cash:"Cash", card:"Card"
+    }
+  };
+
+  /* ---------------- STATE ---------------- */
+  var state = {
+    lang: 'uz',
+    orderType: null,
+    delivery: { address:'', phone:'' },
+    dinein: { arrival:'now', customTime:'', guests:2 },
+    cart: {}, // id -> qty
+    activeCat: 'hotdog',
+    payment: null
+ 
